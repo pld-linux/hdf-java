@@ -130,9 +130,6 @@ rm -rf $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
-%defattr(644,root,root,755)
-
 %files -n java-hdf
 %defattr(644,root,root,755)
 %doc COPYING Readme.txt docs/*.{gif,html,js}
