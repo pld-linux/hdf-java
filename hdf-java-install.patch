@@ -1,0 +1,117 @@
+--- hdf-java/Makefile.in.orig	2012-11-13 00:12:03.000000000 +0100
++++ hdf-java/Makefile.in	2013-04-06 08:14:52.316260883 +0200
+@@ -32,6 +32,7 @@
+ #make this relative to the source root...
+ LIBDIR=$(JH45INSTALLDIR)/lib
+ BINDIR=$(JH45INSTALLDIR)/bin
++JARDIR=$(JH45INSTALLDIR)/share/java
+ DOCDIR= $(JH45INSTALLDIR)/docs
+ UGDIR= $(JH45INSTALLDIR)/UsersGuide
+ 
+@@ -284,15 +285,12 @@
+ 
+ install-lib: natives
+ 	-mkdir -p $(LIBDIR);
+-	-mkdir -p $(LIBDIR)/@JAVATARG@
+ 	@if test x'$(H5INC)' != x'' ; then \
+-	cp $(CLASS_DIR)/@JAVATARG@/libjhdf5.$(JSLEXT) $(LIBDIR)/@JAVATARG@ ;  \
+-	cp $(H5INC)/../lib/*.settings $(LIBDIR)/@JAVATARG@ ; fi
++	cp $(CLASS_DIR)/@JAVATARG@/libjhdf5.$(JSLEXT) $(LIBDIR) ; fi
+ 	@if test x'$(H4INC)' != x'' ; then \
+-	cp $(CLASS_DIR)/@JAVATARG@/libjhdf.$(JSLEXT) $(LIBDIR)/@JAVATARG@ ;  \
+-	cp $(H4INC)/../lib/*.settings $(LIBDIR)/@JAVATARG@ ; fi
++	cp $(CLASS_DIR)/@JAVATARG@/libjhdf.$(JSLEXT) $(LIBDIR) ; fi
+ 	@if test x'$(H45INC)' != x'' ; then \
+-	cp $(CLASS_DIR)/@JAVATARG@/libjh4toh5.$(JSLEXT) $(LIBDIR)/@JAVATARG@ ; fi
++	cp $(CLASS_DIR)/@JAVATARG@/libjh4toh5.$(JSLEXT) $(LIBDIR) ; fi
+ 	@echo "Install Natives complete"
+ 
+ install-hdflib: 
+@@ -300,8 +298,7 @@
+ 
+ do-install-hdflib: hdflib
+ 	-mkdir -p $(LIBDIR);
+-	-mkdir -p $(LIBDIR)/@JAVATARG@
+-	cp $(CLASS_DIR)/@JAVATARG@/libjhdf.$(JSLEXT) $(LIBDIR)/@JAVATARG@
++	cp $(CLASS_DIR)/@JAVATARG@/libjhdf.$(JSLEXT) $(LIBDIR)
+ 	@echo "Install Native HDF complete"
+ 
+ install-hdf5lib: hdf5lib
+@@ -309,8 +306,7 @@
+ 
+ do-install-hdf5lib: hdf5lib
+ 	-mkdir -p $(LIBDIR);
+-	-mkdir -p $(LIBDIR)/@JAVATARG@
+-	cp $(CLASS_DIR)/@JAVATARG@/libjhdf5.$(JSLEXT) $(LIBDIR)/@JAVATARG@
++	cp $(CLASS_DIR)/@JAVATARG@/libjhdf5.$(JSLEXT)
+ 	echo "Install Native HDF5 complete"
+ 
+ uninstall-lib:
+@@ -323,50 +319,44 @@
+ 	@if test x'$(H4INC)' != x'' ; then $(MAKE) do-install-jhdf ; fi
+ 
+ do-install-jhdf: jhdf-packages
+-	-mkdir -p $(LIBDIR);
+-	$(JAR) cf $(JH45INSTALLDIR)/lib/jhdf.jar -C $(CLASS_DIR) $(JHICLASSES)
++	-mkdir -p $(JARDIR);
++	$(JAR) cf $(JARDIR)/jhdf.jar -C $(CLASS_DIR) $(JHICLASSES)
+ 	@echo "Install JHI complete"
+ 
+ install-jhdf5: 
+ 	@if test x'$(H5INC)' != x'' ; then $(MAKE) do-install-jhdf5 ; fi
+ 
+ do-install-jhdf5: jhdf5-packages
+-	-mkdir -p $(LIBDIR);
+-	$(JAR) cf $(JH45INSTALLDIR)/lib/jhdf5.jar -C $(CLASS_DIR) $(JHI5CLASSES)
++	-mkdir -p $(JARDIR);
++	$(JAR) cf $(JARDIR)/jhdf5.jar -C $(CLASS_DIR) $(JHI5CLASSES)
+ 	@echo "Install JHI5 complete"
+ 
+ install-jhdfobj: ncsa.hdf.object
+-	-mkdir -p $(LIBDIR);
+-	$(JAR) cf $(JH45INSTALLDIR)/lib/jhdfobj.jar -C $(CLASS_DIR) $(HDFOBJCLASSES)
++	-mkdir -p $(JARDIR);
++	$(JAR) cf $(JARDIR)/jhdfobj.jar -C $(CLASS_DIR) $(HDFOBJCLASSES)
+ 	@if test x'$(H4INC)' != x'' ; then $(MAKE) do-install-jhdf4obj ; fi
+ 	@if test x'$(H5INC)' != x'' ; then $(MAKE) do-install-jhdf5obj ; fi
+ 	@echo "Install HDFOBJ complete"
+ 
+ do-install-jhdf4obj: ncsa.hdf.object.h4
+-	-mkdir -p $(LIBDIR);
+-	$(JAR) cf $(JH45INSTALLDIR)/lib/jhdf4obj.jar -C $(CLASS_DIR) $(H4OBJCLASSES)
++	-mkdir -p $(JARDIR);
++	$(JAR) cf $(JARDIR)/jhdf4obj.jar -C $(CLASS_DIR) $(H4OBJCLASSES)
+ 	@echo "Install JHDF4 complete"
+ 
+ do-install-jhdf5obj: ncsa.hdf.object.h5
+-	-mkdir -p $(LIBDIR);
+-	$(JAR) cf $(JH45INSTALLDIR)/lib/jhdf5obj.jar -C $(CLASS_DIR) $(H5OBJCLASSES)
++	-mkdir -p $(JARDIR);
++	$(JAR) cf $(JARDIR)/jhdf5obj.jar -C $(CLASS_DIR) $(H5OBJCLASSES)
+ 	@echo "Install JHDF4 complete"
+ 
+ install-jhdfview: ncsa.hdf.view
+-	-mkdir -p $(LIBDIR);
+-	$(JAR) cf $(JH45INSTALLDIR)/lib/jhdfview.jar -C $(CLASS_DIR) $(HDFVIEWCLASSES) $(HDFVIEWICONS)
+-	-mkdir -p $(LIBDIR)/ext
+-	$(JAR) cf $(JH45INSTALLDIR)/lib/ext/nc2obj.jar -C $(CLASS_DIR) $(NC2OBJCLASSES)
+-	$(JAR) cf $(JH45INSTALLDIR)/lib/ext/fitsobj.jar -C $(CLASS_DIR) $(FITSOBJCLASSES)
+-	$(RM) -rf $(UGDIR);
+-	-mkdir -p $(UGDIR);
+-	cp -R docs/hdfview/UsersGuide/* $(UGDIR);	
+-	$(RM) -rf $(UGDIR)/.svn
+-	$(RM) -rf $(UGDIR)/images/.svn
++	-mkdir -p $(JARDIR);
++	$(JAR) cf $(JARDIR)/jhdfview.jar -C $(CLASS_DIR) $(HDFVIEWCLASSES) $(HDFVIEWICONS)
++	$(JAR) cf $(JARDIR)//nc2obj.jar -C $(CLASS_DIR) $(NC2OBJCLASSES)
++	$(JAR) cf $(JARDIR)//fitsobj.jar -C $(CLASS_DIR) $(FITSOBJCLASSES)
+ 	-mkdir -p $(BINDIR);
+-	cp lib/netcdf.jar $(LIBDIR)
+-	cp lib/fits.jar $(LIBDIR)
+-	cp lib/junit.jar $(LIBDIR)
++	cp lib/netcdf.jar $(JARDIR)
++	cp lib/fits.jar $(JARDIR)
++	cp lib/junit.jar $(JARDIR)
+ 	cp bin/hdfview.sh $(BINDIR)
+ 	chmod a+x $(BINDIR)/hdfview.sh
+ 	@echo "Install HDFVIEW complete"

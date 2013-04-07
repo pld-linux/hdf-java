@@ -1,0 +1,40 @@
+--- hdf-java/bin/hdfview.sh.in.orig	2012-11-13 00:11:59.000000000 +0100
++++ hdf-java/bin/hdfview.sh.in	2013-04-07 10:30:34.507623660 +0200
+@@ -3,7 +3,7 @@
+ # Set up default variable values if not supplied by the user.
+ 
+ # where the HDFView is installed, e.g. /home/user1/hdfview
+-HDFJAVA=@JH45INST@
++HDFJAVA="/usr/share/java"
+ export HDFJAVA
+ 
+ # where Java is installed (requires jdk1.4.x or above), e.g. /usr/jdk1.4.2/bin
+@@ -14,10 +14,10 @@
+ #            DO NOT MODIFY BELOW THIS LINE
+ ###############################################################################
+ 
+-CPATH=$HDFJAVA"/lib/jhdf.jar:"$HDFJAVA"/lib/jhdf5.jar:"$HDFJAVA"/lib/jhdfobj.jar"
+-CPATH=$CPATH":"$HDFJAVA"/lib/netcdf.jar:"$HDFJAVA"/lib/fits.jar:"$HDFJAVA"/lib/h5srb.jar"
+-CPATH=$CPATH":"$HDFJAVA"/lib/jhdf4obj.jar:"$HDFJAVA"/lib/jhdf5obj.jar:"$HDFJAVA"/lib/jhdfview.jar"
+-CPATH=$CPATH":"$HDFJAVA"/lib/jgraph.jar:"$HDFJAVA"/lib/ext/*"
++CPATH="$HDFJAVA/jhdf.jar:$HDFJAVA/jhdf5.jar:$HDFJAVA/jhdfobj.jar"
++CPATH="$CPATH:$HDFJAVA/netcdf.jar:$HDFJAVA/fits.jar"
++CPATH="$CPATH:$HDFJAVA/jhdf4obj.jar:$HDFJAVA/jhdf5obj.jar:$HDFJAVA/jhdfview.jar"
++CPATH="$CPATH:$HDFJAVA/fitsobj.jar:$HDFJAVA/nc2obj.jar"
+ 
+ TEST=/usr/bin/test
+ if [ ! -x /usr/bin/test ] 
+@@ -60,7 +60,6 @@
+ 	LD_LIBRARY_PATH=$HDFJAVA/lib/solaris:$HDFJAVA/lib/ext:$LD_LIBRARY_PATH
+ 	;;
+     Linux)
+-        LD_LIBRARY_PATH=$HDFJAVA"/lib/linux:"$HDFJAVA"/lib/ext:"$LD_LIBRARY_PATH
+ 	;;
+     IRIX*)
+ 	OSREV=`/bin/uname -r`
+@@ -89,4 +88,4 @@
+ 
+ export LD_LIBRARY_PATH
+ 
+-$JAVAHOME/java @JAVAX@ -Djava.library.path=$LD_LIBRARY_PATH ncsa.hdf.view.HDFView -root $HDFJAVA $*
++$JAVAHOME/java @JAVAX@ ncsa.hdf.view.HDFView -root $HDFJAVA $*
