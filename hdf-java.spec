@@ -13,6 +13,7 @@ Patch1:		%{name}-install.patch
 Patch2:		%{name}-hdfview.patch
 URL:		http://www.hdfgroup.org/hdf-java-html/
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	h4h5tools-devel
 BuildRequires:	hdf-devel >= 4
 BuildRequires:	hdf5-devel
@@ -102,6 +103,7 @@ HDF5. Przy jego użyciu można:
 %patch2 -p1
 
 %build
+cp -f /usr/share/automake/config.* config
 %{__autoconf}
 %configure \
 	--with-h4toh5 \
