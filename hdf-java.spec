@@ -1,13 +1,13 @@
-# TODO: find fits.jar and netcdf.jar source, build separately
+# TODO: find fits.jar, netcdf.jar, slf4j-api, slf4j-nop source, build separately
 Summary:	HDF Java Products
 Summary(pl.UTF-8):	Produkty HDF Java
 Name:		hdf-java
-Version:	2.9
+Version:	2.11.0
 Release:	1
 Group:		Applications/File
 License:	BSD-like, changed sources must be marked
-Source0:	http://www.hdfgroup.org/ftp/HDF5/hdf-java/src/%{name}-%{version}-src.tar
-# Source0-md5:	f8d53e7d51c9351f4b1c6d7573729558
+Source0:	http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/src/%{name}-%{version}.tar.gz
+# Source0-md5:	22c071948d9d140506e0f91fa1855f27
 Patch0:		%{name}-configure.patch
 Patch1:		%{name}-install.patch
 Patch2:		%{name}-hdfview.patch
@@ -34,6 +34,7 @@ Summary:	Java HDF Interface (JHI)
 Summary(pl.UTF-8):	Interfejs HDF do Javy (JHI)
 Group:		Libraries/Java
 URL:		http://www.hdfgroup.org/hdf-java-html/JNI/jhi/index.html
+Requires:	java-slf4j >= 1.7.5
 
 %description -n java-hdf
 The Java Native Interface to the standard HDF4 library.
@@ -46,6 +47,7 @@ Summary:	Java HDF5 Interface (JHI5)
 Summary(pl.UTF-8):	Interfejs HDF5 do Javy (JHI5)
 Group:		Libraries/Java
 URL:		http://www.hdfgroup.org/hdf-java-html/JNI/jhi5/index.html
+Requires:	java-slf4j >= 1.7.5
 
 %description -n java-hdf5
 The Java Native Interface to the standard HDF5 library.
@@ -96,8 +98,19 @@ HDF5. Przy jego użyciu można:
  - podmieniać komponenty we/wy i GUI, takie jak widok tabeli, widok
    obrazu czy widok metadanych.
 
+%package javadoc
+Summary:	Javadoc documentation for hdf-java classes
+Summary(pl.UTF-8):	Dokumentacja javadoc dla klas hdf-java
+Group:		Documentation
+
+%description javadoc
+Javadoc documentation for hdf-java classes.
+
+%description javadoc -l pl.UTF-8
+Dokumentacja javadoc dla klas hdf-java.
+
 %prep
-%setup -q -n %{name}
+%setup -q
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -122,23 +135,29 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	BINDIR=$RPM_BUILD_ROOT%{_bindir} \
 	LIBDIR=$RPM_BUILD_ROOT%{_libdir} \
-	JARDIR=$RPM_BUILD_ROOT%{_javadir}
+	JARDIR=$RPM_BUILD_ROOT%{_javadir} \
+	DOCDIR=$RPM_BUILD_ROOT%{_docdir}
 
-# see java-junit package
+# in java-junit
 %{__rm} $RPM_BUILD_ROOT%{_javadir}/junit.jar
+# in java-slf4j
+%{__rm} $RPM_BUILD_ROOT%{_javadir}/slf4j-*.jar
+
+install -d $RPM_BUILD_ROOT%{_javadocdir}
+cp -pr docs/javadocs $RPM_BUILD_ROOT%{_javadocdir}/hdf-java
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files -n java-hdf
 %defattr(644,root,root,755)
-%doc COPYING Readme.txt docs/*.{gif,html,js}
+%doc COPYING Readme.txt
 %attr(755,root,root) %{_libdir}/libjhdf.so
 %{_javadir}/jhdf.jar
 
 %files -n java-hdf5
 %defattr(644,root,root,755)
-%doc COPYING Readme.txt docs/*.{gif,html,js}
+%doc COPYING Readme.txt
 %attr(755,root,root) %{_libdir}/libjhdf5.so
 %{_javadir}/jhdf5.jar
 
@@ -155,6 +174,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n hdfview
 %defattr(644,root,root,755)
-%doc docs/hdfview/*
 %attr(755,root,root) %{_bindir}/hdfview.sh
 %{_javadir}/jhdfview.jar
+
+%files javadoc
+%defattr(644,root,root,755)
+%{_javadocdir}/hdf-java
