@@ -3,7 +3,7 @@ Summary:	HDF Java Products
 Summary(pl.UTF-8):	Produkty HDF Java
 Name:		hdf-java
 Version:	2.11.0
-Release:	1
+Release:	2
 Group:		Applications/File
 License:	BSD-like, changed sources must be marked
 Source0:	http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/src/%{name}-%{version}.tar.gz
