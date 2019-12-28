@@ -6,12 +6,12 @@ Version:	2.11.0
 Release:	2
 Group:		Applications/File
 License:	BSD-like, changed sources must be marked
-Source0:	http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/src/%{name}-%{version}.tar.gz
+Source0:	https://support.hdfgroup.org/ftp/HDF5/releases/HDF-JAVA/hdf-java-2.11/src/%{name}-%{version}.tar.gz
 # Source0-md5:	22c071948d9d140506e0f91fa1855f27
 Patch0:		%{name}-configure.patch
 Patch1:		%{name}-install.patch
 Patch2:		%{name}-hdfview.patch
-URL:		http://www.hdfgroup.org/hdf-java-html/
+URL:		http://portal.hdfgroup.org/display/support/HDF-Java
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	h4h5tools-devel
