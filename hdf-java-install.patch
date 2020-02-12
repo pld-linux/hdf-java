@@ -1,5 +1,5 @@
---- hdf-java-2.11.0/Makefile.in.orig	2014-02-20 23:01:32.000000000 +0100
-+++ hdf-java-2.11.0/Makefile.in	2015-01-30 16:18:41.133802666 +0100
+--- hdfjava-3.3.2/Makefile.in.orig	2017-07-25 17:55:31.000000000 +0200
++++ hdfjava-3.3.2/Makefile.in	2020-01-29 17:30:05.635925542 +0100
 @@ -34,6 +34,7 @@
  #make this relative to the source root...
  LIBDIR=$(JH45INSTALLDIR)/lib
@@ -8,7 +8,7 @@
  DOCDIR= $(JH45INSTALLDIR)/docs
  
  CLASS_DIR=$(TOP)/lib
-@@ -282,15 +283,12 @@
+@@ -206,15 +207,12 @@
  
  install-lib: natives
  	-mkdir -p $(LIBDIR);
@@ -27,7 +27,7 @@
  	@echo "Install Natives complete"
  
  install-hdflib: 
-@@ -298,8 +296,7 @@
+@@ -222,8 +220,7 @@
  
  do-install-hdflib: hdflib
  	-mkdir -p $(LIBDIR);
@@ -37,7 +37,7 @@
  	@echo "Install Native HDF complete"
  
  install-hdf5lib: hdf5lib
-@@ -307,8 +304,7 @@
+@@ -231,8 +228,7 @@
  
  do-install-hdf5lib: hdf5lib
  	-mkdir -p $(LIBDIR);
@@ -47,7 +47,7 @@
  	echo "Install Native HDF5 complete"
  
  uninstall-lib:
-@@ -321,47 +317,46 @@
+@@ -245,23 +241,23 @@
  	@if test x'$(H4INC)' != x'' ; then $(MAKE) do-install-jhdf ; fi
  
  do-install-jhdf: jhdf-packages
@@ -67,50 +67,13 @@
 +	$(JAR) cf $(JARDIR)/jhdf5.jar -C $(CLASS_DIR) $(JHI5CLASSES)
  	@echo "Install JHI5 complete"
  
- install-jhdfobj: ncsa.hdf.object
--	-mkdir -p $(LIBDIR);
--	$(JAR) cf $(JH45INSTALLDIR)/lib/jhdfobj.jar -C $(CLASS_DIR) $(HDFOBJCLASSES)
-+	-mkdir -p $(JARDIR);
-+	$(JAR) cf $(JARDIR)/jhdfobj.jar -C $(CLASS_DIR) $(HDFOBJCLASSES)
- 	@if test x'$(H4INC)' != x'' ; then $(MAKE) do-install-jhdf4obj ; fi
- 	@if test x'$(H5INC)' != x'' ; then $(MAKE) do-install-jhdf5obj ; fi
- 	@echo "Install HDFOBJ complete"
+ uninstall-jhi5: 
+-	$(RM) -f $(JH45INSTALLDIR)/lib/jhdf5.jar
++	$(RM) -f $(JARDIR)/jhdf5.jar
  
- do-install-jhdf4obj: ncsa.hdf.object.h4
--	-mkdir -p $(LIBDIR);
--	$(JAR) cf $(JH45INSTALLDIR)/lib/jhdf4obj.jar -C $(CLASS_DIR) $(H4OBJCLASSES)
-+	-mkdir -p $(JARDIR);
-+	$(JAR) cf $(JARDIR)/jhdf4obj.jar -C $(CLASS_DIR) $(H4OBJCLASSES)
- 	@echo "Install JHDF4 complete"
+ uninstall-jhi: 
+-	$(RM) -f $(JH45INSTALLDIR)/lib/jhdf.jar
++	$(RM) -f $(JARDIR)/jhdf.jar
  
- do-install-jhdf5obj: ncsa.hdf.object.h5
--	-mkdir -p $(LIBDIR);
--	$(JAR) cf $(JH45INSTALLDIR)/lib/jhdf5obj.jar -C $(CLASS_DIR) $(H5OBJCLASSES)
-+	-mkdir -p $(JARDIR);
-+	$(JAR) cf $(JARDIR)/jhdf5obj.jar -C $(CLASS_DIR) $(H5OBJCLASSES)
- 	@echo "Install JHDF4 complete"
+ install-docs: install-javadocs
  
- install-jhdfview: ncsa.hdf.view
--	-mkdir -p $(LIBDIR);
--	$(JAR) cf $(JH45INSTALLDIR)/lib/jhdfview.jar -C $(CLASS_DIR) $(HDFVIEWCLASSES) $(HDFVIEWICONS)
--	-mkdir -p $(LIBDIR)/ext
--	$(JAR) cf $(JH45INSTALLDIR)/lib/ext/nc2obj.jar -C $(CLASS_DIR) $(NC2OBJCLASSES)
--	$(JAR) cf $(JH45INSTALLDIR)/lib/ext/fitsobj.jar -C $(CLASS_DIR) $(FITSOBJCLASSES)
-+	-mkdir -p $(JARDIR);
-+	$(JAR) cf $(JARDIR)/jhdfview.jar -C $(CLASS_DIR) $(HDFVIEWCLASSES) $(HDFVIEWICONS)
-+	$(JAR) cf $(JARDIR)/nc2obj.jar -C $(CLASS_DIR) $(NC2OBJCLASSES)
-+	$(JAR) cf $(JARDIR)/fitsobj.jar -C $(CLASS_DIR) $(FITSOBJCLASSES)
- 	-mkdir -p $(BINDIR);
--	cp lib/netcdf.jar $(LIBDIR)
--	cp lib/fits.jar $(LIBDIR)
--	cp lib/junit.jar $(LIBDIR)
--	cp lib/slf4j-api-1.7.5.jar $(LIBDIR)
--	cp lib/ext/slf4j-nop-1.7.5.jar $(LIBDIR)
-+	cp lib/netcdf.jar $(JARDIR)
-+	cp lib/fits.jar $(JARDIR)
-+	cp lib/junit.jar $(JARDIR)
-+	cp lib/slf4j-api-1.7.5.jar $(JARDIR)
-+	cp lib/ext/slf4j-nop-1.7.5.jar $(JARDIR)
- 	cp bin/hdfview.sh $(BINDIR)
- 	chmod a+x $(BINDIR)/hdfview.sh
- 	@echo "Install HDFVIEW complete"

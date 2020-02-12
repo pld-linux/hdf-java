@@ -1,7 +1,7 @@
---- hdf-java/configure.in.orig	2012-11-13 00:12:03.000000000 +0100
-+++ hdf-java/configure.in	2013-04-06 07:35:24.816310231 +0200
-@@ -112,21 +112,21 @@
- LLEXT="a";  
+--- hdfjava-3.3.2/configure.in.orig	2017-07-25 17:55:29.000000000 +0200
++++ hdfjava-3.3.2/configure.in	2020-01-29 17:15:02.134153565 +0100
+@@ -114,21 +114,21 @@
+ LLEXT="a";
  JSLEXT="so";
  ;;
 -x86_64-pc-linux*) LD=$CC; LDOPT=-shared; SLEXT="so";
@@ -10,7 +10,7 @@
  SLEXT="so";
  LLEXT="a";  dnl the extension for the HDF and other libraries to link to
  JSLEXT="so";
- COPT="-shared -Dx86_64 -fPIC" ; 
+ COPT="-shared -Dx86_64 -fPIC" ;
  ;;
 -ia64-pc-linux*) LD=$CC; LDOPT=-shared; SLEXT="so";
 +ia64-*-linux*) LD=$CC; LDOPT=-shared; SLEXT="so";
@@ -18,14 +18,14 @@
  SLEXT="so";
  LLEXT="a";  dnl the extension for the HDF and other libraries to link to
  JSLEXT="so";
- COPT="-shared -Dia64 -fPIC" ; 
+ COPT="-shared -Dia64 -fPIC" ;
  ;;
 -*-pc-linux*) LD=$CC; LDOPT=-shared; SLEXT="so";
 +*-linux*) LD=$CC; LDOPT=-shared; SLEXT="so";
  TARGETLIB="linux"
  SLEXT="so";
  LLEXT="a";  dnl the extension for the HDF and other libraries to link to
-@@ -167,8 +167,8 @@
+@@ -169,8 +169,8 @@
  
  case "$withval" in
    yes)
@@ -36,7 +36,7 @@
      ;;
    no)
        ZLIB=""
-@@ -202,7 +202,8 @@
+@@ -204,7 +204,8 @@
  
  case "$withval" in
    yes)
@@ -46,7 +46,7 @@
      ;;
    no)
        JPEGLIB=""
-@@ -236,8 +237,8 @@
+@@ -238,8 +239,8 @@
  
  case "$withval" in
    yes)
@@ -57,7 +57,7 @@
      ;;
    no)
        SZLIB=""
-@@ -277,8 +278,8 @@
+@@ -279,8 +280,8 @@
  case "$withval" in
    yes)
      dnl AC_MSG_ERROR(HDF4 library needed for compilation.)
@@ -68,7 +68,7 @@
      ;;
    no)
        HDF4LIB=""
-@@ -292,7 +293,7 @@
+@@ -294,7 +295,7 @@
        fi
        hdf4_lib="`echo $withval |cut -f2 -d, -s`"
        if test -n "$hdf4_lib"; then
@@ -77,7 +77,7 @@
        fi
        HAVE_HDF4="yes"
    else
-@@ -302,7 +303,7 @@
+@@ -304,7 +305,7 @@
    ;;
  esac
  if test -n "$HDF4LIB"; then
@@ -86,7 +86,7 @@
    HAVE_HDF4="yes"
  fi
  AC_MSG_RESULT([$HAVE_HDF4])
-@@ -353,8 +354,8 @@
+@@ -355,8 +356,8 @@
  
  case "$withval" in
    yes)
@@ -97,7 +97,7 @@
      ;;
    no)
        HDF5LIB=""
-@@ -362,15 +363,13 @@
+@@ -364,15 +365,13 @@
      ;;
    *)
    if test -n "$withval" ; then
@@ -114,7 +114,7 @@
        fi
        HAVE_HDF5="yes"
    else
-@@ -380,7 +379,7 @@
+@@ -382,7 +381,7 @@
    ;;
  esac
  if test -n "$HDF5LIB"; then
@@ -123,7 +123,7 @@
    HAVE_HDF5="yes"
  fi
  AC_MSG_RESULT([$HAVE_HDF5])
-@@ -395,8 +394,14 @@
+@@ -397,8 +396,14 @@
  dnl
  if test -n "$HDF5LIB"; then
    AC_MSG_CHECKING([dependencies for HDF5 library])
@@ -138,59 +138,7 @@
    if test -n "$DFL";
    then
      if test "$HAVE_ZLIB" != "yes"; then
-@@ -428,7 +433,8 @@
- AC_ARG_WITH(h4toh5,[  --with-h4toh5=INC,LIB     Path to the HDF 4 to 5 library (optional feature, if selected then path required is not in default path)],,)
- case "$withval" in
-   yes)
--  USEH45="no"
-+  USEH45="yes"
-+  H45LIB="-lh4toh5"
-     ;;
-   no)
-   H45LIB=""
-@@ -451,14 +457,11 @@
-         hdf45_lib="`echo $withval | cut -f2 -d, -s`"
-     
-         if test -n "$hdf45_lib"; then
--          HDF45LIB="$hdf45_lib"
-           saved_LDFLAGS="$LDFLAGS"
-           LDFLAGS="$LDFLAGS -L$hdf45_lib"
-+        fi
-           AC_CHECK_LIB(h4toh5, H4toh5open,, LDFLAGS="$saved_LDFLAGS"
-                      AC_MSG_ERROR(cannot find HDF45 library.))
--        else
--       AC_MSG_ERROR(cannot find HDF45 library path.)
--        fi
-   USEH45="yes"
-     fi
-     ;;
-@@ -466,12 +469,11 @@
- 
- AC_MSG_RESULT([$USEH45])
- if test -n "$H45LIB"; then
--  AC_MSG_RESULT([h4toh5 library found at: $HDF45LIB])
-+  AC_MSG_RESULT([h4toh5 library found at: $H45LIB])
- fi
--H45LIB=$HDF45LIB
- H45INC=$HDF45INC
- 
--ac_cv_lib_HDF45=$HDF45LIB
-+ac_cv_lib_HDF45=$H45LIB
- ac_cv_lib_HDF45INC=$HDF45INC
- 
- dnl  find java stuff:  use -with-jdk
-@@ -637,10 +639,6 @@
-   if test \( ! -d "$JH45INST" \); then
-     JH45INST_FOUND=0
-   fi
--  if test \( ! -w "$JH45INST" \); then
--    AC_MSG_ERROR( [ $JH45INST : not writable ])
--    JH45INST_FOUND=0
--  fi
- fi
- until test $JH45INST_FOUND -eq 1; do
-   echo "Please type the directory in which to install the JH45"
-@@ -711,7 +709,7 @@
+@@ -613,7 +618,7 @@
  JSLEXT="so";
  JAVAINC2=$JAVAINC/irix; JAVATARG=irix-$OS;
  ;;
@@ -199,7 +147,7 @@
  SLEXT="so";
  LLEXT="a";  # the extension for the HDF and other libraries to link to
  JSLEXT="so";
-@@ -719,7 +717,7 @@
+@@ -621,7 +626,7 @@
  JAVAINC2=$JAVAINC/linux;
  JAVATARG=linux;
  ;;
@@ -208,12 +156,12 @@
  SLEXT="so";
  LLEXT="a";  # the extension for the HDF and other libraries to link to
  JSLEXT="so";
-@@ -727,7 +725,7 @@
+@@ -629,7 +634,7 @@
  JAVAINC2=$JAVAINC/linux;
  JAVATARG=linux;
  ;;
--*-pc-linux*) LD=$CC; LDOPT=-shared; 
-+*-linux*) LD=$CC; LDOPT=-shared; 
+-*-pc-linux*) LD=$CC; LDOPT=-shared;
++*-linux*) LD=$CC; LDOPT=-shared;
  SLEXT="so";
  LLEXT="a";  # the extension for the HDF and other libraries to link to
  JSLEXT="so";
@@ -239,3 +187,13 @@
  
  # Macro def: object filename used
  OBJECTS =  exceptionImp.o h5Constants.o h5Imp.o h5aImp.o h5dImp.o h5eImp.o h5fImp.o h5gImp.o h5iImp.o h5lImp.o h5oImp.o h5pImp.o h5rImp.o h5sImp.o h5tImp.o nativeData.o h5util.o h5zImp.o
+--- hdfjava-3.3.2/native/hdf5lib/Makefile.in.orig	2020-02-02 18:31:06.573816725 +0100
++++ hdfjava-3.3.2/native/hdf5lib/Makefile.in	2020-02-03 17:32:43.558058582 +0100
+@@ -32,6 +32,7 @@
+ JSLEXT=@JSLEXT@
+ 
+ COPT=@COPT@
++CPPFLAGS=@CPPFLAGS@
+ 
+ CFLAGS = -D_FILE_OFFSET_BITS=64 $(DEFS) -I. -I$(HDF5INC) -I$(JAVAINC1) -I$(JAVAINC2)
+ 

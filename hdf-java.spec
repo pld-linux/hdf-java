@@ -1,22 +1,23 @@
-# TODO: find fits.jar, netcdf.jar, slf4j-api, slf4j-nop source, build separately
 Summary:	HDF Java Products
 Summary(pl.UTF-8):	Produkty HDF Java
 Name:		hdf-java
-Version:	2.11.0
-Release:	2
+Version:	3.3.2
+Release:	1
 Group:		Applications/File
 License:	BSD-like, changed sources must be marked
-Source0:	https://support.hdfgroup.org/ftp/HDF5/releases/HDF-JAVA/hdf-java-2.11/src/%{name}-%{version}.tar.gz
-# Source0-md5:	22c071948d9d140506e0f91fa1855f27
+Source0:	https://support.hdfgroup.org/ftp/HDF5/releases/HDF-JAVA/hdfjni-%{version}/src/HDFJava-%{version}-Source.tar.gz
+# Source0-md5:	5d234a4ff22a010d4f140fa60be86e34
 Patch0:		%{name}-configure.patch
 Patch1:		%{name}-install.patch
-Patch2:		%{name}-hdfview.patch
+Patch2:		%{name}-version.patch
 URL:		http://portal.hdfgroup.org/display/support/HDF-Java
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	h4h5tools-devel
 BuildRequires:	hdf-devel >= 4
-BuildRequires:	hdf5-devel
+BuildRequires:	hdf5-devel >= 1.8
+BuildRequires:	jdk
+BuildRequires:	rpmbuild(macros) >= 1.294
 BuildRequires:	szip-devel
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -33,7 +34,7 @@ interfejsy Javy HDF4 i HDF5.
 Summary:	Java HDF Interface (JHI)
 Summary(pl.UTF-8):	Interfejs HDF do Javy (JHI)
 Group:		Libraries/Java
-URL:		http://www.hdfgroup.org/hdf-java-html/JNI/jhi/index.html
+URL:		http://portal.hdfgroup.org/display/HDFVIEW/JHI+Design+Notes
 Requires:	java-slf4j >= 1.7.5
 
 %description -n java-hdf
@@ -46,7 +47,7 @@ Natywny interfejs Javy (JNI) do biblioteki standardowej HDF4.
 Summary:	Java HDF5 Interface (JHI5)
 Summary(pl.UTF-8):	Interfejs HDF5 do Javy (JHI5)
 Group:		Libraries/Java
-URL:		http://www.hdfgroup.org/hdf-java-html/JNI/jhi5/index.html
+URL:		http://portal.hdfgroup.org/display/HDFVIEW/JHI5+Design+Notes
 Requires:	java-slf4j >= 1.7.5
 
 %description -n java-hdf5
@@ -54,49 +55,6 @@ The Java Native Interface to the standard HDF5 library.
 
 %description -n java-hdf5 -l pl.UTF-8
 Natywny interfejs Javy (JNI) do biblioteki standardowej HDF5.
-
-%package -n java-hdf-object
-Summary:	Java HDF Object Package
-Summary(pl.UTF-8):	Pakiet Javy HDF Object
-Group:		Libraries/Java
-URL:		http://www.hdfgroup.org/hdf-java-html/hdf-object/index.html
-Requires:	java-hdf = %{version}-%{release}
-Requires:	java-hdf5 = %{version}-%{release}
-
-%description -n java-hdf-object
-Java package that implements HDF4 and HDF5 data objects in an
-object-oriented form.
-
-%description -n java-hdf-object -l pl.UTF-8
-Pakiet Javy z implementacją obiektów danych HDF w postaci
-zorientowanej obiektowo.
-
-%package -n hdfview
-Summary:	HDFView - visual tool for browsing and editing HDF4 and HDF5 files
-Summary(pl.UTF-8):	HDFView - graficzne narzędzie do przeglądania i edycji plików HDF4 i HDF5
-Group:		Applications/File
-URL:		http://www.hdfgroup.org/hdf-java-html/hdfview/index.html
-Requires:	java-hdf-object = %{version}-%{release}
-
-%description -n hdfview
-HDFView is a visual tool for browsing and editing HDF4 and HDF5 files.
-Using HDFView, you can:
- - view a file hierarchy in a tree structure
- - create new file, add or delete groups and datasets
- - view and modify the content of a dataset
- - add, delete and modify attributes
- - replace I/O and GUI components such as table view, image view and
-   metadata view
-
-%description -n hdfview -l pl.UTF-8
-HDFView to graficzne narzędzie do przeglądania i edycji plików HDF4 i
-HDF5. Przy jego użyciu można:
- - oglądać hierarchię pliku w strukturze drzewiastej
- - utworzyć nowy plik, dodawać i usuwać grupy i zbiory danych
- - oglądać i modyfikować zawartość zbioru danych
- - dodawać, usuwać i modyfikować atrybuty
- - podmieniać komponenty we/wy i GUI, takie jak widok tabeli, widok
-   obrazu czy widok metadanych.
 
 %package javadoc
 Summary:	Javadoc documentation for hdf-java classes
@@ -110,7 +68,7 @@ Javadoc documentation for hdf-java classes.
 Dokumentacja javadoc dla klas hdf-java.
 
 %prep
-%setup -q
+%setup -q -n hdfjava-%{version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -118,8 +76,8 @@ Dokumentacja javadoc dla klas hdf-java.
 %build
 cp -f /usr/share/automake/config.* config
 %{__autoconf}
+CPPFLAGS="%{rpmcppflags} -DH5_USE_18_API"
 %configure \
-	--with-h4toh5 \
 	--with-hdf4=%{_includedir}/hdf,%{_libdir} \
 	--with-hdf5=%{_includedir},%{_libdir} \
 	--with-jdk=%{_jvmdir}/java/include,%{_jvmdir}/java/jre/lib \
@@ -128,6 +86,31 @@ cp -f /usr/share/automake/config.* config
 	--with-libz
 
 %{__make}
+
+install -d javadoc/{hdflib,hdf5lib}
+TOPDIR=$(pwd)
+cd hdf/hdflib
+%javadoc -d "${TOPDIR}/javadoc/hdflib" \
+	-author \
+	-classpath lib/slf4j-api-1.7.5.tar \
+	-doctitle "<h1>HDF Java Wrapper</h1>" \
+	-use \
+	-version \
+	-windowtitle "HDF Java" \
+	*.java
+
+cd ../hdf5lib
+%javadoc -d "${TOPDIR}/javadoc/hdf5lib" \
+	-author \
+	-classpath lib/slf4j-api-1.7.5.tar \
+	-doctitle "<h1>HDF5 Java Wrapper</h1>" \
+	-use \
+	-version \
+	-windowtitle "HDF5 Java" \
+	callbacks/*.java \
+	exceptions/*.java \
+	structs/*.java \
+	*.java
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -138,13 +121,8 @@ rm -rf $RPM_BUILD_ROOT
 	JARDIR=$RPM_BUILD_ROOT%{_javadir} \
 	DOCDIR=$RPM_BUILD_ROOT%{_docdir}
 
-# in java-junit
-%{__rm} $RPM_BUILD_ROOT%{_javadir}/junit.jar
-# in java-slf4j
-%{__rm} $RPM_BUILD_ROOT%{_javadir}/slf4j-*.jar
-
 install -d $RPM_BUILD_ROOT%{_javadocdir}
-cp -pr docs/javadocs $RPM_BUILD_ROOT%{_javadocdir}/hdf-java
+cp -pr javadoc/{hdflib,hdf5lib} $RPM_BUILD_ROOT%{_javadocdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -161,22 +139,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libjhdf5.so
 %{_javadir}/jhdf5.jar
 
-%files -n java-hdf-object
-%defattr(644,root,root,755)
-%{_javadir}/fitsobj.jar
-%{_javadir}/jhdfobj.jar
-%{_javadir}/jhdf4obj.jar
-%{_javadir}/jhdf5obj.jar
-%{_javadir}/nc2obj.jar
-# NOTE: external jars
-%{_javadir}/fits.jar
-%{_javadir}/netcdf.jar
-
-%files -n hdfview
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/hdfview.sh
-%{_javadir}/jhdfview.jar
-
 %files javadoc
 %defattr(644,root,root,755)
-%{_javadocdir}/hdf-java
+%{_javadocdir}/hdflib
+%{_javadocdir}/hdf5lib
