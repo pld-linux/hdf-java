@@ -13,7 +13,6 @@ Patch2:		%{name}-version.patch
 URL:		http://portal.hdfgroup.org/display/support/HDF-Java
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	h4h5tools-devel
 BuildRequires:	hdf-devel >= 4
 BuildRequires:	hdf5-devel >= 1.8
 BuildRequires:	jdk
