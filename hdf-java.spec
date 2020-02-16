@@ -1,8 +1,10 @@
+# NOTE: this package is obsolete; it uses 32-bit object identifiers.
+# For hdf 4.2.12+ and hdf5 1.10+ use wrappers built from hdf.spec/hdf5.spec instead.
 Summary:	HDF Java Products
 Summary(pl.UTF-8):	Produkty HDF Java
 Name:		hdf-java
 Version:	3.3.2
-Release:	1
+Release:	0.1
 Group:		Applications/File
 License:	BSD-like, changed sources must be marked
 Source0:	https://support.hdfgroup.org/ftp/HDF5/releases/HDF-JAVA/hdfjni-%{version}/src/HDFJava-%{version}-Source.tar.gz
@@ -15,6 +17,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	hdf-devel >= 4
 BuildRequires:	hdf5-devel >= 1.8
+BuildRequires:	hdf5-devel < 1.10
 BuildRequires:	jdk
 BuildRequires:	rpmbuild(macros) >= 1.294
 BuildRequires:	szip-devel
